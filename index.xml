@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My New Hugo Site</title>
+    <link>http://example.org/</link>
+    <description>Recent content on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title></title>
+      <link>http://example.org/%E5%A6%82%E4%BD%95%E6%8A%93%E5%8F%96%E7%BA%BF%E4%B8%8Ahttps%E6%AD%A3%E5%BC%8F%E5%8C%85/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://example.org/%E5%A6%82%E4%BD%95%E6%8A%93%E5%8F%96%E7%BA%BF%E4%B8%8Ahttps%E6%AD%A3%E5%BC%8F%E5%8C%85/</guid>
+      <description>如何使用charles来抓取正式包 问题介绍 目前内销浏览器做了https的防止被抓包的功能，由服务端下发的/client/initialize/param/configs.do 接口中的middleHijack控制，线上的配置是开启中，那么如何在不影响线上的配置，通过正式包抓包排查问题呢？
+接口:https://browserconf.vivo.com.cn/client/initialize/param/configs.do 参数: &amp;#34;middleHijack&amp;#34;: { &amp;#34;blackList&amp;#34;: [], &amp;#34;enabled&amp;#34;: 1 } 解决方案 通过charles将这个接口的请求，直接映射到本地的response，返回给客户端。设置报文数据
+charles配置步骤 1. 安装openSSL openssl命令没有用，需安装openssl 1. OpenSSL官网 官方下载地址： https://www.openssl.org/source/ 2. Windows安装方法 OpenSSL官网没有提供windows版本的安装包，可以选择其他开源平台提供的工具。例如http://slproweb.com/products/Win32OpenSSL.html 以该工具为例，安装步骤和使用方法如下： 2.1 选择32位或者64位合适的版本下载，例如Win64OpenSSL_Light-1_0_2h.exe： 2.2 设置环境变量，OpenSSL的安装路径。例如工具安装在C:\OpenSSL-Win64，则将C:\OpenSSL-Win64\bin；复制到Path中 2. 安装vivo自己的ADB 1. 下载 地址：http://itsoft.vivo.xyz/e/search/?title=adb&amp;amp;modelid=131&amp;amp;siteid=1 2. 设置环境变量 3. 安装charles 1. 下载至少4.0以上的版本 2. 密钥注册 Registered Name: https://zhile.io License Key: 48891cf209c6d32bf4 3. 设置ssl代理 代理加 * : 443 4. 给手机安装charles的ssl证书 导出ssl证书
+1. 导出证书，打开Charles → help → SSL Proxying → Save Charles Root Certificat.</description>
+    </item>
+    
+  </channel>
+</rss>

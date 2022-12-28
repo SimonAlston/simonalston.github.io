@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <title> | My New Hugo Site</title>
+    <meta property="og:title" content=" - My New Hugo Site">
+    <meta property="og:type" content="article">
+        
+        
+    <meta name="Keywords" content="">
+    <meta name="description" content="">
+        
+    <meta name="author" content="">
+    <meta property="og:url" content="http://example.org/%E5%A6%82%E4%BD%95%E6%8A%93%E5%8F%96%E7%BA%BF%E4%B8%8Ahttps%E6%AD%A3%E5%BC%8F%E5%8C%85/">
+    <link rel="shortcut icon" href='/favicon.ico'  type="image/x-icon">
+
+    <link rel="stylesheet" href='/css/normalize.css'>
+    <link rel="stylesheet" href='/css/style.css'>
+    <script type="text/javascript" src="//cdn.bootcdn.net/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    
+    
+    
+    
+    
+    
+</head>
+
+<body>
+    <header id="header" class="clearfix">
+    <div class="container">
+        <div class="col-group">
+            <div class="site-name ">
+                
+                    <a id="logo" href="http://example.org/">
+                        My New Hugo Site
+                    </a>
+                
+                
+            </div>
+            <div>
+                <nav id="nav-menu" class="clearfix">
+                    <a class="" href="http://example.org/">Home</a>
+                    
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>
+
+    <div id="body">
+        <div class="container">
+            <div class="col-group">
+
+                <div class="col-8" id="main">
+                    
+<div class="res-cons">
+    
+    <article class="post">
+        <header>
+            <h1 class="post-title"></h1>
+        </header>
+        
+
+
+        
+        
+        <div class="post-content">
+            <h1 id="如何使用charles来抓取正式包">如何使用charles来抓取正式包</h1>
+<h2 id="问题介绍">问题介绍</h2>
+<p>目前内销浏览器做了https的防止被抓包的功能，由服务端下发的/client/initialize/param/configs.do 接口中的middleHijack控制，线上的配置是开启中，那么如何在不影响线上的配置，通过正式包抓包排查问题呢？</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">接口</span><span style="color:#f92672">:</span><span style="color:#e6db74">https://browserconf.vivo.com.cn/client/initialize/param/configs.do</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">参数</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">&#34;middleHijack&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">{</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">&#34;blackList&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">[],</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">&#34;enabled&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">1</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">		}</span>
+</span></span></code></pre></div><h2 id="解决方案">解决方案</h2>
+<p>通过charles将这个接口的请求，直接映射到本地的response，返回给客户端。设置报文数据</p>
+<h2 id="charles配置步骤">charles配置步骤</h2>
+<h3 id="1-安装openssl">1. 安装openSSL</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">openssl命令没有用，需安装openssl</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">OpenSSL官网</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">官方下载地址：</span> <span style="color:#e6db74">https://www.openssl.org/source/</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.</span> <span style="color:#e6db74">Windows安装方法</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">OpenSSL官网没有提供windows版本的安装包，可以选择其他开源平台提供的工具。例如http</span><span style="color:#f92672">:</span><span style="color:#e6db74">//slproweb.com/products/Win32OpenSSL.html</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">以该工具为例，安装步骤和使用方法如下：</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.1</span> <span style="color:#e6db74">选择32位或者64位合适的版本下载，例如Win64OpenSSL_Light-1_0_2h.exe： </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.2</span> <span style="color:#e6db74">设置环境变量，OpenSSL的安装路径。例如工具安装在C:\OpenSSL-Win64，则将C:\OpenSSL-Win64\bin；复制到Path中</span>
+</span></span></code></pre></div><h3 id="2-安装vivo自己的adb">2. 安装vivo自己的ADB</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">下载</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">地址：http</span><span style="color:#f92672">:</span><span style="color:#e6db74">//itsoft.vivo.xyz/e/search/?title=adb&amp;modelid=131&amp;siteid=1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.</span> <span style="color:#e6db74">设置环境变量</span>
+</span></span></code></pre></div><h3 id="3-安装charles">3. 安装charles</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">下载至少4.0以上的版本</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.</span> <span style="color:#e6db74">密钥注册</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Registered</span> <span style="color:#e6db74">Name: https://zhile.io</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">License</span> <span style="color:#e6db74">Key: 48891cf209c6d32bf4</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010"> </span>
+</span></span></code></pre></div><p>
+        <img class="mx-auto" alt="image-20200720092707346" src="%e5%a6%82%e4%bd%95%e6%8a%93%e5%8f%96%e7%ba%bf%e4%b8%8ahttps%e6%ad%a3%e5%bc%8f%e5%8c%85.assets/image-20200720092707346.png" />   
+    </p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">3.</span> <span style="color:#e6db74">设置ssl代理</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">代理加</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">*</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">443</span>
+</span></span></code></pre></div><p>
+        <img class="mx-auto" alt="image-20200720093903581" src="%e5%a6%82%e4%bd%95%e6%8a%93%e5%8f%96%e7%ba%bf%e4%b8%8ahttps%e6%ad%a3%e5%bc%8f%e5%8c%85.assets/image-20200720093903581.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20200720094058448" src="%e5%a6%82%e4%bd%95%e6%8a%93%e5%8f%96%e7%ba%bf%e4%b8%8ahttps%e6%ad%a3%e5%bc%8f%e5%8c%85.assets/image-20200720094058448.png" />   
+    </p>
+<h3 id="4-给手机安装charles的ssl证书">4. 给手机安装charles的ssl证书</h3>
+<ol>
+<li>
+<p>导出ssl证书</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">导出证书，打开Charles → help → SSL Proxying → Save Charles Root Certificat...  →  输入文件名，文件格式默认.pem格式。</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.</span> <span style="color:#e6db74">获取证书E:\charles_certificate_20180913.pem在安卓系统中能识别的证书文件名：</span>
+</span></span><span style="display:flex;"><span> <span style="color:#a6e22e">命令：</span>   <span style="color:#e6db74">openssl x509 -subject_hash_old -in E:\VV.pem</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">3.</span>  <span style="color:#e6db74">将E:\charles_certificate_20180913.pem </span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">&#34;注意&#34;</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">一定要取&#34;命令输出后&#34;的数字.0</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#a6e22e">重命名为</span>  <span style="color:#e6db74">E:\b4f212be.0   （必须以.0格式结尾）</span>
+</span></span></code></pre></div></li>
+<li>
+<p>获取root权限，并获取系统写入权限</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">0.</span> <span style="color:#e6db74">打开vivo调试开关， 电话输入 *#558#</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">打开</span> <span style="color:#e6db74">品质验证测试--&gt;开发调试--&gt; 端口调试</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">运行 adb vivoroot 获取root权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.</span> <span style="color:#e6db74">运行 adb remount 获取对系统的读取权限</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">3.</span> <span style="color:#e6db74">如果不行， adb reboot remount 重复步骤1</span>
+</span></span></code></pre></div></li>
+<li>
+<p>push证书到手机上</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">运行 adb push 命令</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">adb</span> <span style="color:#e6db74">push E:\b4f212be.0 /system/etc/security/cacerts/  </span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.</span> <span style="color:#e6db74">手机浏览器安装证书</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#a6e22e">前提条件</span> <span style="color:#f92672">:</span><span style="color:#e6db74">连上电脑的charles代理</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">手机浏览器输入,</span> <span style="color:#e6db74">&#34;chls.pro/ssl&#34;, 下载安装证书,名称随便取</span>
+</span></span></code></pre></div></li>
+<li>
+<p>注意点</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">执行adb push 的时候 报`secure_mkdirs failed: Permission denied`</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">运行</span> <span style="color:#e6db74">adb reboot remount 重试</span>
+</span></span></code></pre></div></li>
+<li>
+<p>手机自带 抓包使用工具</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">vivo浏览器输入</span><span style="color:#f92672">:</span> <span style="color:#e6db74">about:core</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">vivo浏览器进入开发者模式的路径：http</span><span style="color:#f92672">:</span><span style="color:#e6db74">//debugcore.browser.vivo.xyz/</span>
+</span></span></code></pre></div></li>
+</ol>
+<h2 id="设置本地报文数据">设置本地报文数据</h2>
+<h3 id="1-保存response">1. 保存response</h3>
+<p>本地保存一份/client/initialize/param/configs.do 的 response, 修改其中的==middleHijack.enabled== 为0；</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">接口</span><span style="color:#f92672">:</span><span style="color:#e6db74">https://browserconf.vivo.com.cn/client/initialize/param/configs.do</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">参数</span><span style="color:#f92672">:</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">&#34;middleHijack&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">{</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">&#34;blackList&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">[],</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#a6e22e">&#34;enabled&#34;</span><span style="color:#f92672">:</span> <span style="color:#e6db74">0</span>
+</span></span><span style="display:flex;"><span><span style="color:#960050;background-color:#1e0010">		}</span>
+</span></span></code></pre></div><h3 id="2-设置本地映射">2. 设置本地映射</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">打开路径: Tools-&gt;Map Local</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.</span> <span style="color:#e6db74">添加映射: local path 就是之前保存的response</span>
+</span></span></code></pre></div><p>
+        <img class="mx-auto" alt="image-20200720105713871" src="%e5%a6%82%e4%bd%95%e6%8a%93%e5%8f%96%e7%ba%bf%e4%b8%8ahttps%e6%ad%a3%e5%bc%8f%e5%8c%85.assets/image-20200720105713871.png" />   
+    </p>
+<h3 id="3-设置响应头">3. 设置响应头</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-properties" data-lang="properties"><span style="display:flex;"><span><span style="color:#a6e22e">1.</span> <span style="color:#e6db74">打开路径: Tools-&gt;Rewrite</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">2.</span> <span style="color:#e6db74">添加映射: </span>
+</span></span></code></pre></div><p>
+        <img class="mx-auto" alt="image-20200720105902627" src="%e5%a6%82%e4%bd%95%e6%8a%93%e5%8f%96%e7%ba%bf%e4%b8%8ahttps%e6%ad%a3%e5%bc%8f%e5%8c%85.assets/image-20200720105902627.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20200720105909422" src="%e5%a6%82%e4%bd%95%e6%8a%93%e5%8f%96%e7%ba%bf%e4%b8%8ahttps%e6%ad%a3%e5%bc%8f%e5%8c%85.assets/image-20200720105909422.png" />   
+    </p>
+<p>
+        <img class="mx-auto" alt="image-20200720105918440" src="%e5%a6%82%e4%bd%95%e6%8a%93%e5%8f%96%e7%ba%bf%e4%b8%8ahttps%e6%ad%a3%e5%bc%8f%e5%8c%85.assets/image-20200720105918440.png" />   
+    </p>
+
+        </div>
+
+        
+
+
+        
+
+
+        <div class="post-meta meta-tags">
+            
+            No tags
+            
+        </div>
+    </article>
+    
+    
+
+    
+    
+    
+    
+
+</div>
+
+                    <footer id="footer">
+    <div>
+        &copy; 2022 <a href="http://example.org/">My New Hugo Site By </a>
+        
+    </div>
+    <br />
+    <div>
+        <div class="github-badge">
+            <a href="https://gohugo.io/" target="_black" rel="nofollow"><span class="badge-subject">Powered by</span><span class="badge-value bg-blue">Hugo</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://www.flysnow.org/" target="_black"><span class="badge-subject">Design by</span><span class="badge-value bg-brightgreen">飞雪无情</span></a>
+        </div>
+        <div class="github-badge">
+            <a href="https://github.com/flysnow-org/maupassant-hugo" target="_black"><span class="badge-subject">Theme</span><span class="badge-value bg-yellowgreen">Maupassant</span></a>
+        </div>
+    </div>
+</footer>
+
+
+    
+    
+    <script type="text/javascript">
+        window.MathJax = {
+            tex2jax: {
+                inlineMath: [['$', '$']],
+                processEscapes: true
+                }
+            };
+    </script>
+    <script src='//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<a id="rocket" href="#top"></a>
+<script type="text/javascript" src='/js/totop.js?v=0.0.0' async=""></script>
+
+
+
+
+
+                </div>
+
+                <div id="secondary">
+    <section class="widget">
+        <form id="search" action='//www.google.com/search' method="get" accept-charset="utf-8" target="_blank" _lpchecked="1">
+      
+      <input type="text" name="q" maxlength="20" placeholder="Search">
+      <input type="hidden" name="sitesearch" value="http://example.org/">
+      <button type="submit" class="submit icon-search"></button>
+</form>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title">Latest articles</h3>
+<ul class="widget-list">
+    
+</ul>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/categories/'>Categories</a></h3>
+<ul class="widget-list">
+    
+</ul>
+    </section>
+
+    <section class="widget">
+        <h3 class="widget-title"><a href='/tags/'>Tags</a></h3>
+<div class="tagcloud">
+    
+</div>
+    </section>
+
+    
+
+    <section class="widget">
+        <h3 class="widget-title">Meta</h3>
+        <ul class="widget-list">
+            <li><a href="http://example.org/index.xml">RSS</a></li>
+        </ul>
+    </section>
+</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
